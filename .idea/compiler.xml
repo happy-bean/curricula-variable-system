@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="curricula-variable-system" />
         <module name="edu.tute" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="curricula-variable-system" target="1.6" />
       <module name="edu.tute" target="1.5" />
     </bytecodeTargetLevel>
   </component>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="curricula-variable-system:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="edu.tute.war">
+      <element id="artifact" artifact-name="curricula-variable-system:war exploded" />
+    </root>
+  </artifact>
+</component>
