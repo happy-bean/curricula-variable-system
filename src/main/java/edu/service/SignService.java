@@ -1,7 +1,7 @@
 package edu.service;
 
 import edu.common.Result;
-import edu.model.UserDo;
+import edu.model.User;
 
 /**
  * 登陆层
@@ -17,7 +17,7 @@ public interface SignService {
      * @param signKey 登陆key
      * @return
      */
-    Result<?> signIn(String signKey);
+    Result<User> signIn(String signKey);
 
     /**
      * 注销
@@ -33,7 +33,15 @@ public interface SignService {
      * @param user
      * @return
      */
-    Result<?> signUp(UserDo user);
+    Result<?> signUp(User user);
+
+    /**
+     * 更改个人信息
+     *
+     * @param user
+     * @return
+     */
+    Result<?> update(User user);
 
 }
 

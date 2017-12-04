@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="curricula-variable-system" target="1.6" />
+      <module name="curricula-variable-system" target="1.8" />
       <module name="edu.tute" target="1.5" />
     </bytecodeTargetLevel>
   </component>
