@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 登陆控制层
@@ -28,15 +30,60 @@ public class SignController {
     @Autowired
     private SignService signService;
 
+    @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result<?> login(HttpServletResponse response) throws IOException {
+
+        response.sendRedirect("/login/login.html");
+        return null;
+    }
+
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
-    private Result<?> signIn(HttpServletRequest request) {
+    public Result<String> signIn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Result<String> baseResult = new Result<>();
+
         String num = request.getParameter("num");
         String pass = request.getParameter("pass");
         String key = num + pass;
-        Result<User> result = result = signService.signIn(key);
+        Result<User> result = signService.signIn(key);
+        baseResult.setCode(result.getCode());
+        baseResult.setMess(result.getMess());
+
+        User user = result.getData();
         if (result.getCode() == ResultMess.SUCCESS.getCode()) {
-            request.getSession().setAttribute(num, result.getData().getuType());
+            request.getSession().setAttribute("userType", user.getuType());
+
+            String indexUrl = "";
+
+            switch (user.getuType()) {
+
+                /**
+                 * 管理员
+                 * */
+                case 1:
+                    indexUrl = "/admin/admin_index.html";
+                    break;
+
+                /**
+                 * 教师
+                 * */
+                case 2:
+                    indexUrl = "/teacher/teacher_index.html";
+                    break;
+
+                /**
+                 * 学生
+                 * */
+                case 3:
+                    indexUrl="/student/student_index.html";
+                    break;
+
+                default:
+                    logger.info("登陆信息有误" + key);
+                    break;
+
+            }
+            baseResult.setData(indexUrl);
         }
-        return result;
+        return baseResult;
     }
 }

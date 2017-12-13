@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui-v2.2.3/layui/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<form class="layui-form" action="/admin/add_user">
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">工号/学号</label>
+            <div class="layui-input-block">
+                <input name="uNum" lay-verify="num" placeholder="工号/学号" autocomplete="off"
+                       class="layui-input" type="text">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-inline">
+                <input name="uName" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input"
+                       type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline">
+                <input name="uPasswd"  lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input"
+                       type="password">
+                <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-inline">
+                <input name="re_pass"  lay-verify="re_pass" placeholder="确认密码" autocomplete="off" class="layui-input"
+                       type="password">
+                <div class="layui-form-mid layui-word-aux">　</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">年级</label>
+            <div class="layui-input-inline">
+                <select name="uGrade" lay-verify="required" lay-search="">
+                    <option value="">选择</option>
+                    <option value="1">大学一年级</option>
+                    <option value="2">大学二年级</option>
+                    <option value="3">大学三年级</option>
+                    <option value="4">大学四年级</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">专业</label>
+            <div class="layui-input-inline">
+                <select name="uMajor" lay-verify="required" lay-search="">
+                    <option value="">选择</option>
+                    <option value="1">计算机教育科学</option>
+                    <option value="2">软件工程</option>
+                    <option value="3">计算机媒体</option>
+                    <option value="4">网络工程</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">年级</label>
+            <div class="layui-input-inline">
+                <select name="modules" lay-verify="required" lay-search="">
+                    <option value="">选择</option>
+                    <option value="1">大学一年级</option>
+                    <option value="2">大学二年级</option>
+                    <option value="3">大学三年级</option>
+                    <option value="4">大学四年级</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">专业</label>
+            <div class="layui-input-inline">
+                <select name="modules" lay-verify="required" lay-search="">
+                    <option value="">选择</option>
+                    <option value="1">计算机教育科学</option>
+                    <option value="2">软件工程</option>
+                    <option value="3">计算机媒体</option>
+                    <option value="4">网络工程</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">性别</label>
+        <div class="layui-input-block">
+            <input name="uGender" value="男" title="男"  type="radio">
+            <input name="uGender" value="女" title="女" type="radio" checked="">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">身份</label>
+        <div class="layui-input-block">
+            <input name="uType" value="1" title="管理员" type="radio">
+            <input name="uType" value="2" title="教师" type="radio" checked="">
+            <input name="uType" value="3" title="学生"  type="radio">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="../layui-v2.2.3/layui/layui.js" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+        //自定义验证规则
+        form.verify({
+            num: function (value) {
+                if (value.length < 10) {
+                    return '学号至少是10位有效数字';
+                }
+            }
+            , pass: [/(.+){6,12}$/, '密码必须6到12位']
+            ,re_pass: function (value) {
+                if(value!=pass.value){
+                    return '两次密码不同'
+                }
+            }
+        });
+        form.init()
+    });
+</script>
+
+</body>
+</html>

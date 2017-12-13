@@ -39,9 +39,12 @@
         <mvc:interceptor>
             <!-- /** 表示所有的url，包括子url路径 -->
             <mvc:mapping path="/**"/>
-            <bean class="edu.controller.AccessInterceptor"></bean>
+            <bean class="edu.controller.AccessInterceptor"/>
         </mvc:interceptor>
+    </mvc:interceptors>
 
+    <mvc:interceptors>
+        <bean class="edu.controller.LoginInterceptor"/>
     </mvc:interceptors>
 
 </beans>

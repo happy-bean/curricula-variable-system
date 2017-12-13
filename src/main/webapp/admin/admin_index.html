@@ -6,11 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>96社团选课系统</title>
     <!-- Icons -->
-    <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/simple-line-icons.css" rel="stylesheet">
+    <link href="/admin/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/admin/css/simple-line-icons.css" rel="stylesheet">
     <!-- Main styles for this application -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="/admin/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../layui-v2.2.3/layui/css/layui.css">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="../layui-v2.2.3/layui/layui.all.js" charset="utf-8"></script>
+    <script src="../layui-v2.2.3/layui/layui.js" charset="utf-8"></script>
 </head>
 
 
@@ -66,7 +69,7 @@
             <!-- Breadcrumb Menu-->
             <li class="breadcrumb-menu hidden-md-down">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <button class="layui-btn" style="margin-top: 3px">增加</button>
+                    <button id="show_add_user" class="layui-btn" style="margin-top: 3px">增加</button>
                 </div>
             </li>
         </ol>
@@ -661,26 +664,135 @@
     <span class="float-right">96社团选课系统</span>
 </footer>
 
-<!-- Bootstrap and necessary plugins -->
-<script src="bower_components/jquery/dist/jquery.min.js"></script>
-<script src="bower_components/tether/dist/js/tether.min.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="bower_components/pace/pace.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
 
 
-<!-- Plugins and scripts required by all views -->
-<script src="bower_components/chart.js/dist/Chart.min.js"></script>
-
-
-<!-- GenesisUI main scripts -->
-
-<script src="js/app.js"></script>
-
-
-<!-- Plugins and scripts required by this views -->
-
-<!-- Custom scripts required by this view -->
-<script src="js/views/main.js"></script>
+        $("#show_add_user").click(function(){
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-dem', //加上边框
+                area: ['700px', '600px'], //宽高
+                content:
+                '<div style="width: 100%;height: 30px"></div>'+
+                '<form class="layui-form" action="/admin/add_user">\n' +
+                '\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <div class="layui-inline">\n' +
+                '            <label class="layui-form-label">工号/学号</label>\n' +
+                '            <div class="layui-input-block">\n' +
+                '                <input name="uNum" lay-verify="num" placeholder="工号/学号" autocomplete="off"\n' +
+                '                       class="layui-input" type="text">\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '        <div class="layui-inline">\n' +
+                '            <label class="layui-form-label">姓名</label>\n' +
+                '            <div class="layui-input-inline">\n' +
+                '                <input name="uName" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input"\n' +
+                '                       type="text">\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <div class="layui-inline">\n' +
+                '            <label class="layui-form-label">密码</label>\n' +
+                '            <div class="layui-input-inline">\n' +
+                '                <input name="uPasswd"  lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input"\n' +
+                '                       type="password">\n' +
+                '                <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '\n' +
+                '        <div class="layui-inline">\n' +
+                '            <label class="layui-form-label">确认密码</label>\n' +
+                '            <div class="layui-input-inline">\n' +
+                '                <input name="re_pass"  lay-verify="re_pass" placeholder="确认密码" autocomplete="off" class="layui-input"\n' +
+                '                       type="password">\n' +
+                '                <div class="layui-form-mid layui-word-aux">　</div>\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <div class="layui-inline">\n' +
+                '            <label class="layui-form-label">年级</label>\n' +
+                '            <div class="layui-input-inline">\n' +
+                '                <select name="uGrade" lay-verify="required" lay-search="">\n' +
+                '                    <option value="">选择</option>\n' +
+                '                    <option value="1">大学一年级</option>\n' +
+                '                    <option value="2">大学二年级</option>\n' +
+                '                    <option value="3">大学三年级</option>\n' +
+                '                    <option value="4">大学四年级</option>\n' +
+                '                </select>\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '\n' +
+                '        <div class="layui-inline">\n' +
+                '            <label class="layui-form-label">专业</label>\n' +
+                '            <div class="layui-input-inline">\n' +
+                '                <select name="uMajor" lay-verify="required" lay-search="">\n' +
+                '                    <option value="">选择</option>\n' +
+                '                    <option value="1">计算机教育科学</option>\n' +
+                '                    <option value="2">软件工程</option>\n' +
+                '                    <option value="3">计算机媒体</option>\n' +
+                '                    <option value="4">网络工程</option>\n' +
+                '                </select>\n' +
+                '            </div>\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <label class="layui-form-label">性别</label>\n' +
+                '        <div class="layui-input-block">\n' +
+                '            <input name="uGender" value="1" title="男"  type="radio">\n' +
+                '            <input name="uGender" value="2" title="女" type="radio" checked="">\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <label class="layui-form-label">身份</label>\n' +
+                '        <div class="layui-input-block">\n' +
+                '            <input name="uType" value="1" title="管理员" type="radio">\n' +
+                '            <input name="uType" value="2" title="教师" type="radio" checked="">\n' +
+                '            <input name="uType" value="3" title="学生"  type="radio">\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <div class="layui-input-block">\n' +
+                '            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>\n' +
+                '            <button type="reset" class="layui-btn layui-btn-primary">重置</button>\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '</form>'+
+                '<script>\n' +
+                '    layui.use([\'form\', \'layedit\', \'laydate\'], function () {\n' +
+                '        var form = layui.form\n' +
+                '            , layer = layui.layer\n' +
+                '            , layedit = layui.layedit\n' +
+                '            , laydate = layui.laydate;\n' +
+                '        //自定义验证规则\n' +
+                '        form.verify({\n' +
+                '            num: function (value) {\n' +
+                '                if (value.length < 10) {\n' +
+                '                    return \'学号至少是10位有效数字\';\n' +
+                '                }\n' +
+                '            }\n' +
+                '            , pass: [/(.+){6,12}$/, \'密码必须6到12位\']\n' +
+                '            ,re_pass: function (value) {\n' +
+                '                if(value!=pass.value){\n' +
+                '                    return \'两次密码不同\'\n' +
+                '                }\n' +
+                '            }\n' +
+                '        });\n' +
+                '        form.init()\n' +
+                '    });\n' +
+                '</'+'script>'
+            });
+        });
+    });
+</script>
 
 </body>
 
