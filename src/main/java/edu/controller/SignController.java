@@ -30,6 +30,12 @@ public class SignController {
     @Autowired
     private SignService signService;
 
+    /**
+     * 登陆跳转
+     *
+     * @param response 响应
+     * @return
+     */
     @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
     public Result<?> login(HttpServletResponse response) throws IOException {
 
@@ -37,12 +43,18 @@ public class SignController {
         return null;
     }
 
+    /**
+     * 登陆
+     *
+     * @param num     账号
+     * @param pass    密码
+     * @param request 请求
+     * @return 跳转地址
+     */
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
-    public Result<String> signIn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Result<String> signIn(String num, String pass, HttpServletRequest request) {
         Result<String> baseResult = new Result<>();
 
-        String num = request.getParameter("num");
-        String pass = request.getParameter("pass");
         String key = num + pass;
         Result<User> result = signService.signIn(key);
         baseResult.setCode(result.getCode());
@@ -74,7 +86,7 @@ public class SignController {
                  * 学生
                  * */
                 case 3:
-                    indexUrl="/student/student_index.html";
+                    indexUrl = "/student/student_index.html";
                     break;
 
                 default:

@@ -28,38 +28,33 @@ public class SignServiceImpl implements SignService {
      * 登陆
      *
      * @param signKey 登陆key
-     * @return
+     * @return 用户对象
      */
     @Override
     public Result<User> signIn(String signKey) {
 
         Result<User> result = new Result<>();
 
-        try {
-            User user = userMapper.selectByKey(signKey);
-            if (user != null) {
-                result.setCode(ResultMess.SUCCESS.getCode());
-                result.setMess(ResultMess.SUCCESS.getMess());
-                result.setData(user);
-                logger.info("该用户查找成功 " + signKey);
-            } else {
-                result.setCode(ResultMess.ERROR.getCode());
-                result.setMess(ResultMess.ERROR.getMess());
-                logger.info("该用户查找失败 " + signKey);
-            }
-        } catch (Exception e) {
-            logger.error("该用户查找失败 " + signKey, e);
+        User user = userMapper.selectByKey(signKey);
+        if (user != null) {
+            result.setCode(ResultMess.SUCCESS.getCode());
+            result.setMess(ResultMess.SUCCESS.getMess());
+            result.setData(user);
+            logger.info("该用户查找成功 用户key=" + signKey);
+        } else {
             result.setCode(ResultMess.ERROR.getCode());
             result.setMess(ResultMess.ERROR.getMess());
+            logger.info("该用户查找失败 用户key=" + signKey);
         }
+
         return result;
     }
 
     /**
      * 注销
      *
-     * @param token
-     * @return
+     * @param token token
+     * @return ?
      */
     @Override
     public Result<?> signOut(String token) {
@@ -69,53 +64,52 @@ public class SignServiceImpl implements SignService {
     /**
      * 注册
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 用户id
      */
     @Override
-    public Result<?> signUp(User user) {
+    public Result<Integer> signUp(User user) {
 
-        Result<?> result = new Result<>();
+        Result<Integer> result = new Result<>();
 
-        try {
-            int id = userMapper.insert(user);
-            if (id > 0) {
-                result.setCode(ResultMess.SUCCESS.getCode());
-                result.setMess(ResultMess.SUCCESS.getMess());
-                logger.info("该用户插入成功 " + user.getuNum());
-            } else {
-                result.setCode(ResultMess.ERROR.getCode());
-                result.setMess(ResultMess.ERROR.getMess());
-                logger.info("该用户插入失败 " + user.getuNum());
-            }
-        } catch (Exception e) {
-            logger.error("该用户插入失败 " + user.getuNum(), e);
+        int id = userMapper.insert(user);
+        if (id > 0) {
+            result.setCode(ResultMess.SUCCESS.getCode());
+            result.setMess(ResultMess.SUCCESS.getMess());
+            result.setData(id);
+            logger.info("该用户插入成功 用户id=" + id);
+        } else {
             result.setCode(ResultMess.ERROR.getCode());
             result.setMess(ResultMess.ERROR.getMess());
+            logger.info("该用户插入失败 用户id=" + id);
         }
+
         return result;
     }
 
+    /**
+     * 更改个人信息
+     *
+     * @param user 用户对象
+     * @return 用户id
+     */
     @Override
-    public Result<?> update(User user) {
-        Result<?> result = new Result<>();
+    public Result<Integer> update(User user) {
 
-        try {
-            int id = userMapper.updateByPrimaryKey(user);
-            if (id > 0) {
-                result.setCode(ResultMess.SUCCESS.getCode());
-                result.setMess(ResultMess.SUCCESS.getMess());
-                logger.info("该用户更新成功 " + user.getuNum());
-            } else {
-                result.setCode(ResultMess.ERROR.getCode());
-                result.setMess(ResultMess.ERROR.getMess());
-                logger.info("该用户更新失败 " + user.getuNum());
-            }
-        } catch (Exception e) {
-            logger.error("该用户更新失败 " + user.getuNum(), e);
+        Result<Integer> result = new Result<>();
+
+        int id = userMapper.updateByPrimaryKey(user);
+        if (id > 0) {
+            result.setCode(ResultMess.SUCCESS.getCode());
+            result.setMess(ResultMess.SUCCESS.getMess());
+            result.setData(id);
+            logger.info("该用户更新成功 用户id=" + id);
+        } else {
             result.setCode(ResultMess.ERROR.getCode());
             result.setMess(ResultMess.ERROR.getMess());
+            logger.info("该用户更新失败 用户id=" + id);
         }
+
         return result;
     }
 }

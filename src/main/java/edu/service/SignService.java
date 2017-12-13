@@ -15,33 +15,33 @@ public interface SignService {
      * 登陆
      *
      * @param signKey 登陆key
-     * @return
+     * @return 用户对象
      */
     Result<User> signIn(String signKey);
 
     /**
      * 注销
      *
-     * @param token
-     * @return
+     * @param token token
+     * @return ?
      */
     Result<?> signOut(String token);
 
     /**
      * 注册
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 用户id
      */
-    Result<?> signUp(User user);
+    Result<Integer> signUp(User user);
 
     /**
      * 更改个人信息
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 用户id
      */
-    Result<?> update(User user);
+    Result<Integer> update(User user);
 
 }
 

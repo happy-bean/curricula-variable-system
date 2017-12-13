@@ -16,32 +16,32 @@ public interface AdminService {
     /**
      * 增加用户
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 用户id
      */
-    Result<Long> addUser(User user);
+    Result<Integer> addUser(User user);
 
     /**
      * 删除用户
      *
-     * @param id
-     * @return
+     * @param id 用户id
+     * @return 用户id
      */
     Result<Integer> deleteUserById(Integer id);
 
     /**
      * 更新用户
      *
-     * @param user
-     * @param
+     * @param user 用户对象
+     * @return 用户id
      */
     Result<Integer> updateUserById(User user);
 
     /**
      * 查询用户详情
      *
-     * @param id
-     * @return
+     * @param id 用户id
+     * @return 用户对象
      */
     Result<User> queryUserById(Integer id);
 
@@ -50,7 +50,7 @@ public interface AdminService {
      *
      * @param pageNo   页号
      * @param pageSize 页面大小
-     * @return
+     * @return 学生用户列表
      */
     Result<PageInfo<User>> queryStudentsByPage(Integer pageNo, Integer pageSize);
 
@@ -59,39 +59,39 @@ public interface AdminService {
      *
      * @param pageNo   页号
      * @param pageSize 页面大小
-     * @return
+     * @return 教师用户列表
      */
     Result<PageInfo<User>> queryTeachersByPage(Integer pageNo, Integer pageSize);
 
     /**
      * 增加课程
      *
-     * @param course
-     * @return
+     * @param course 课程对象
+     * @return 课程id
      */
     Result<Integer> addCourse(Course course);
 
     /**
      * 删除课程
      *
-     * @param id
-     * @return
+     * @param id 课程id
+     * @return 课程id
      */
-    Result<Integer> deleteCourse(Integer id);
+    Result<Integer> deleteCourseById(Integer id);
 
     /**
      * 更新课程
      *
-     * @param course
-     * @return
+     * @param course 课程对象
+     * @return 课程id
      */
-    Result<Integer> updateCourse(Course course);
+    Result<Integer> updateCourseById(Course course);
 
     /**
      * 查找课程
      *
-     * @param id
-     * @return
+     * @param id 课程id
+     * @return 课程对象
      */
     Result<Course> queryCourseById(Integer id);
 
@@ -100,7 +100,7 @@ public interface AdminService {
      *
      * @param pageNo   页号
      * @param pageSize 页面大小
-     * @return
-     * */
+     * @return 课程列表
+     */
     Result<PageInfo<Course>> queryCoursesByPage(Integer pageNo, Integer pageSize);
 }
