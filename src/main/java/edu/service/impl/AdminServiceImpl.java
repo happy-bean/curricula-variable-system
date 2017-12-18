@@ -44,7 +44,13 @@ public class AdminServiceImpl implements AdminService {
 
         Result<Integer> result = new Result<>();
 
-        int id = userMapper.insert(user);
+        int id=0;
+
+        try {
+             id = userMapper.insert(user);
+        }catch (Exception e){
+
+        }
 
         if (id <= 0) {
             result.setCode(ResultMess.ERROR.getCode());
@@ -97,7 +103,7 @@ public class AdminServiceImpl implements AdminService {
 
         Result<Integer> result = new Result<>();
 
-        int id = userMapper.updateByPrimaryKey(user);
+        int id = userMapper.updateByPrimaryKeySelective(user);
 
         if (id <= 0) {
             result.setCode(ResultMess.ERROR.getCode());

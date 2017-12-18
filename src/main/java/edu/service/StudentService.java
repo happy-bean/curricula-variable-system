@@ -53,11 +53,11 @@ public interface StudentService {
     /**
      * 选课
      *
-     * @param id                    学生id
-     * @param curriculaVariableInfo 选课信息对象
+     * @param cId   课程id
+     * @param sId 学生id
      * @return 选课信息id
      */
-    Result<Integer> addCurriculaVariableInfo(Integer id, CurriculaVariableInfo curriculaVariableInfo);
+    Result<Integer> addCurriculaVariableInfo(Integer cId, Integer sId);
 
     /**
      * 查看已选课程信息
@@ -72,7 +72,7 @@ public interface StudentService {
      *
      * @param id 选课信息id
      * @return 选课信息id
-     * */
+     */
     Result<Integer> deleteCurriculaVariableInfo(Integer id);
 
 }

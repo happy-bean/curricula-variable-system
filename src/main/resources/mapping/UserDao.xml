@@ -11,8 +11,8 @@
     <result column="u_passwd" property="uPasswd" jdbcType="VARCHAR" />
     <result column="u_type" property="uType" jdbcType="INTEGER" />
     <result column="u_name" property="uName" jdbcType="VARCHAR" />
-    <result column="u_gender" property="uGender" jdbcType="INTEGER" />
-    <result column="u_grade" property="uGrade" jdbcType="INTEGER" />
+    <result column="u_gender" property="uGender" jdbcType="VARCHAR" />
+    <result column="u_grade" property="uGrade" jdbcType="VARCHAR" />
     <result column="u_major" property="uMajor" jdbcType="VARCHAR" />
     <result column="u_key" property="uKey" jdbcType="VARCHAR" />
   </resultMap>

@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import java.util.List;
  * @author wgt
  * @date 17-12-14
  */
+@Service
 public class StudentServiceImpl implements StudentService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -79,7 +81,7 @@ public class StudentServiceImpl implements StudentService {
 
         Result<Integer> result = new Result<>();
 
-        int id = userMapper.updateByPrimaryKey(user);
+        int id = userMapper.updateByPrimaryKeySelective(user);
 
         if (id <= 0) {
             result.setCode(ResultMess.ERROR.getCode());
@@ -139,7 +141,7 @@ public class StudentServiceImpl implements StudentService {
          * */
         User student = userMapper.selectByPrimaryKey(id);
 
-        Integer grade = student.getuGrade();
+        String grade = student.getuGrade();
 
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? 10 : pageSize;
@@ -164,19 +166,19 @@ public class StudentServiceImpl implements StudentService {
     /**
      * 选课
      *
-     * @param id                    学生id
-     * @param curriculaVariableInfo 选课信息对象
+     * @param cId   课程id
+     * @param sId 学生id
      * @return 选课信息id
      */
     @Override
-    public Result<Integer> addCurriculaVariableInfo(Integer id, CurriculaVariableInfo curriculaVariableInfo) {
+    public Result<Integer> addCurriculaVariableInfo(Integer cId, Integer sId) {
 
         Result<Integer> result = new Result<>();
 
         /**
          * 学号
          * */
-        User user = userMapper.selectByPrimaryKey(id);
+        User user = userMapper.selectByPrimaryKey(sId);
         int sNo = user.getuNum();
 
         List<CurriculaVariableInfo> list = null;
@@ -199,14 +201,11 @@ public class StudentServiceImpl implements StudentService {
 
 
         /**
-         * 选课信息课程号
-         * */
-        int cno = curriculaVariableInfo.getcCNo();
-
-        /**
          * 该课程信息
          * */
-        Course course = courseMapper.selectCoursesByCno(cno);
+        Course course=courseMapper.selectByPrimaryKey(cId);
+        int cno = Integer.parseInt(course.getcNo());
+
 
         /**
          * 判断是否选过该课程/判断上课时间是否冲突
@@ -239,19 +238,24 @@ public class StudentServiceImpl implements StudentService {
          * 查看当前选择该课程的人数
          * */
         list = curriculaVariableInfoMapper.selectCurriculaVariableInfosByCno(cno);
-        int nowNum = list.size();
 
         /**
          * 判断是否人数已满
          * */
-        if (limitNum == nowNum) {
+        if (list==null||list.size() ==limitNum) {
             result.setCode(ResultMess.ERROR.getCode());
             result.setMess("该课程当前人数已满");
             logger.info("该课程当前人数已满 课程no=" + course.getcNo());
             return result;
         }
 
-        int id1 = courseMapper.insert(course);
+        CurriculaVariableInfo curriculaVariableInfo=new CurriculaVariableInfo();
+        curriculaVariableInfo.setcSNo(sNo);
+        curriculaVariableInfo.setcTNo(course.gettNo());
+        curriculaVariableInfo.setcCNo(cno);
+        curriculaVariableInfo.setcStatus("审核中");
+
+        int id1 = curriculaVariableInfoMapper.insert(curriculaVariableInfo);
 
         if (id1 <= 0) {
             result.setCode(ResultMess.ERROR.getCode());
@@ -282,10 +286,10 @@ public class StudentServiceImpl implements StudentService {
          * */
         User user = userMapper.selectByPrimaryKey(id);
         int sNo = user.getuNum();
-        
+
         List<CurriculaVariableInfo> list = curriculaVariableInfoMapper.selectSuccessCurriculaVariableInfosBySno(sNo);
 
-        if (list == null || list.size() == 1) {
+        if (list == null || list.size() == 0) {
             result.setCode(ResultMess.ERROR.getCode());
             result.setMess("您当前还未选过任何课程");
             logger.info("您当前还未选过任何课程 学生id=" + id);
@@ -305,23 +309,23 @@ public class StudentServiceImpl implements StudentService {
      * @return 选课信息id
      */
     @Override
-    public Result<Integer> deleteCurriculaVariableInfo(Integer id){
+    public Result<Integer> deleteCurriculaVariableInfo(Integer id) {
 
-        Result<Integer> result=new Result<>();
+        Result<Integer> result = new Result<>();
 
         /**
          * 判断该课程是否已经选中
          * */
-        CurriculaVariableInfo curriculaVariableInfo=curriculaVariableInfoMapper.selectByPrimaryKey(id);
+        CurriculaVariableInfo curriculaVariableInfo = curriculaVariableInfoMapper.selectByPrimaryKey(id);
 
-        if(curriculaVariableInfo.getcStatus()==1){
+        if (StringUtils.equals(curriculaVariableInfo.getcStatus(), "通过")) {
             result.setCode(ResultMess.ERROR.getCode());
-            result.setMess("您不能取消通过的课程");
+            result.setMess("您不能取消审核通过的课程");
             logger.info("您不能取消通过的课程 课程id=" + id);
             return result;
         }
 
-        int id1=curriculaVariableInfoMapper.deleteByPrimaryKey(id);
+        int id1 = curriculaVariableInfoMapper.deleteByPrimaryKey(id);
         if (id1 <= 0) {
             result.setCode(ResultMess.ERROR.getCode());
             result.setMess("取消失败，请稍后再试");

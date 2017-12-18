@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>96社团选课系统</title>
+    <!-- Icons -->
+    <link href="/student/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/student/css/simple-line-icons.css" rel="stylesheet">
+    <!-- Main styles for this application -->
+    <link href="/student/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../layui-v2.2.3/layui/css/layui.css">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="../layui-v2.2.3/layui/layui.all.js" charset="utf-8"></script>
+    <script src="../layui-v2.2.3/layui/layui.js" charset="utf-8"></script>
+</head>
+
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+<header class="app-header navbar">
+    <ul class="nav navbar-nav hidden-md-down">
+        <li class="nav-item px-1">
+            <a class="nav-link" href="admin_index.html"><h2>96社团选课系统</h2></a>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav ml-auto">
+
+        <li class="layui-nav-item" lay-unselect="">
+            <a href="/user/signOut"><img src="http://t.cn/RCzsdCq" class="layui-nav-img">退出</a>
+        </li>
+
+        <li class="nav-item hidden-md-down">
+            <a class="nav-link navbar-toggler aside-menu-toggler" href="#"> </a>
+        </li>
+    </ul>
+</header>
+
+<div class="app-body">
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul class="nav">
+
+                <li class="nav-title">
+                    <h4>管理</h4>
+                </li>
+                <li class="nav-item nav-dropdown">
+                    <a class="nav-link nav-dropdown-toggle" href="student_index.html"><i class="icon-star"></i>选课信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="student_course.html"><i class="icon-pie-chart"></i>课程信息</a>
+                </li>
+                <li class="divider"></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <main class="main">
+
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">选课信息管理</li>
+            <!-- Breadcrumb Menu-->
+        </ol>
+
+        <div class="container-fluid">
+
+            <div class="animated fadeIn">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <script>
+                                layui.use('table', function () {
+                                    var table = layui.table;
+                                    table.render({ //其它参数在此省略
+                                        elem: '#demo',
+                                        url: '/student/query_curriculaVariableInfos',
+                                        page: true,
+                                        limit: 10,
+                                        width: 1040,
+                                        height: 500,
+                                        where: {},//如果无需传递额外参数，可不加该参数
+                                        method: 'post', //如果无需自定义HTTP类型，可不加该参数
+                                        request: {
+                                            pageName: 'pageNo' //页码的参数名称，默认：page
+                                            , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                                        }, //如果无需自定义请求参数，可不加该参数
+                                        response: {
+                                            statusName: 'code' //数据状态的字段名称，默认：code
+                                            , statusCode: 200 //成功的状态码，默认：0
+                                            , msgName: 'mess' //状态信息的字段名称，默认：msg
+                                            , countName: 'size' //数据总数的字段名称，默认：count
+                                            , dataName: 'data' //数据列表的字段名称，默认：data
+                                        } //如果无需自定义数据响应名称，可不加该参数
+                                        ,
+                                        cols: [[ //标题栏
+                                            {field: 'id', width: 100, title: 'ID', sort: true}
+                                            , {field: 'cCNo', width: 150, title: '课程号', sort: true}
+                                            , {field: 'cSNo', width: 110, title: '学号', sort: true}
+                                            , {field: 'cTNo', width: 100, title: '教工号', sort: true}
+                                            , {field: 'cMark', width: 120, title: '成绩', sort: true}
+                                            , {field: 'cStatus', width: 120, title: '审核状态', sort: true}
+                                            , {
+                                                fixed: 'right',
+                                                width: 250,
+                                                title: '操作',
+                                                align: 'center',
+                                                toolbar: '#barDemo'
+                                            }
+                                        ]]
+                                    });
+
+                                    //监听工具条
+                                    table.on('tool(test)', function (obj) {
+                                        var data = obj.data;
+                                        if (obj.event === 'detail') {
+                                            layer.confirm('确认取消', function (index) {
+                                                //取消课程
+                                                obj.del();
+                                                var baseUrl = "http://127.0.0.1:8080";
+                                                $.post(baseUrl + "/student/delete_curriculaVariableInfo",
+                                                    {
+                                                        id: data.id
+                                                    },
+                                                    function (data, status) {
+                                                        if (data.code == 200) {
+                                                            layer.open({
+                                                                type: 1,
+                                                                id: 'open',
+                                                                offset: '100px',
+                                                                content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                                btn: '确定',
+                                                                btnAlign: 'c',
+                                                                shade: 0,
+                                                                yes: function () {
+                                                                    layer.closeAll();
+                                                                }
+                                                            });
+                                                            layer.close(index);
+                                                        } else {
+                                                            layer.open({
+                                                                type: 1,
+                                                                id: 'open',
+                                                                offset: '100px',
+                                                                content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                                btn: '确定',
+                                                                btnAlign: 'c',
+                                                                shade: 0,
+                                                                yes: function () {
+                                                                    layer.closeAll();
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                            });
+                                        }
+                                    });
+
+                                    $('.demoTable .layui-btn').on('click', function () {
+                                        var type = $(this).data('type');
+                                        active[type] ? active[type].call(this) : '';
+                                    });
+                                });
+
+                            </script>
+
+                            <script type="text/html" id="barDemo">
+                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">取消</a>
+                            </script>
+
+                            <table id="demo" lay-filter="test"></table>
+                        </div>
+                    </div>
+                    <!--/.col-->
+                </div>
+                <!--/.row-->
+            </div>
+
+
+        </div>
+        <!-- /.conainer-fluid -->
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    © 2017-12-01
+    <span class="float-right">96社团选课系统</span>
+</footer>
+
+</body>
+
+</html>

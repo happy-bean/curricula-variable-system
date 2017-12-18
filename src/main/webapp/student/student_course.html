@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>96社团选课系统</title>
+    <!-- Icons -->
+    <link href="/student/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/student/css/simple-line-icons.css" rel="stylesheet">
+    <!-- Main styles for this application -->
+    <link href="/student/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../layui-v2.2.3/layui/css/layui.css">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="../layui-v2.2.3/layui/layui.all.js" charset="utf-8"></script>
+    <script src="../layui-v2.2.3/layui/layui.js" charset="utf-8"></script>
+</head>
+
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+<header class="app-header navbar">
+    <ul class="nav navbar-nav hidden-md-down">
+        <li class="nav-item px-1">
+            <a class="nav-link" href="student_index.html"><h2>96社团选课系统</h2></a>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav ml-auto">
+
+        <li class="layui-nav-item" lay-unselect="">
+            <a href="/user/signOut"><img src="http://t.cn/RCzsdCq" class="layui-nav-img">退出</a>
+        </li>
+
+        <li class="nav-item hidden-md-down">
+            <a class="nav-link navbar-toggler aside-menu-toggler" href="#"> </a>
+        </li>
+    </ul>
+</header>
+
+<div class="app-body">
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul class="nav">
+
+                <li class="nav-title">
+                    <h4>管理</h4>
+                </li>
+                <li class="nav-item nav-dropdown">
+                    <a class="nav-link" href="student_index.html"><i class="icon-star"></i>选课信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-dropdown-toggle" href="student_course.html"><i class="icon-pie-chart"></i>课程信息</a>
+                </li>
+                <li class="divider"></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <main class="main">
+
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">课程信息管理</li>
+            <!-- Breadcrumb Menu-->
+        </ol>
+
+        <div class="container-fluid">
+
+            <div class="animated fadeIn">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <script>
+                                layui.use('table', function () {
+                                    var table = layui.table;
+                                    table.render({ //其它参数在此省略
+                                        elem: '#sources',
+                                        url: '/student/query_courses',
+                                        page: true,
+                                        limit: 10,
+                                        width: 1040,
+                                        height: 500,
+                                        where: {},//如果无需传递额外参数，可不加该参数
+                                        method: 'post', //如果无需自定义HTTP类型，可不加该参数
+                                        request: {
+                                            pageName: 'pageNo' //页码的参数名称，默认：page
+                                            , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                                        }, //如果无需自定义请求参数，可不加该参数
+                                        response: {
+                                            statusName: 'pageNum' //数据状态的字段名称，默认：code
+                                            , statusCode: 1 //成功的状态码，默认：0
+                                            , msgName: 'mess' //状态信息的字段名称，默认：msg
+                                            , countName: 'size' //数据总数的字段名称，默认：count
+                                            , dataName: 'list' //数据列表的字段名称，默认：data
+                                        } //如果无需自定义数据响应名称，可不加该参数
+                                        ,
+                                        cols: [[ //标题栏
+                                            {field: 'id', width: 50, title: 'ID', sort: true}
+                                            , {field: 'cNo', width: 100, title: '课程号', sort: true}
+                                            , {field: 'cName', width: 100, title: '课程名', sort: true}
+                                            , {field: 'cCredit', width: 70, title: '学分', sort: true}
+                                            , {field: 'cPerid', width: 70, title: '学时', sort: true}
+                                            , {field: 'tNo', width: 100, title: '教师工号', sort: true}
+                                            , {field: 'cGrade', width: 100, title: '年级', sort: true}
+                                            , {field: 'cAddress', width: 120, title: '上课地点', sort: true}
+                                            , {field: 'cWeekTime', width: 120, title: '上课时间', sort: true}
+                                            , {fixed: 'right', width:160, title: '操作',align: 'center', toolbar: '#barDemo'
+                                            }
+                                        ]]
+                                    });
+
+                                    //监听工具条
+                                    table.on('tool(test)', function (obj) {
+                                        var data = obj.data;
+                                        if (obj.event === 'detail') {
+                                            //查看
+                                            showCourse('disabled','style="display: none"','')
+                                            showCourseInfo(data.id)
+                                        }else if (obj.event === 'edit') {
+                                            //选课
+                                            xuanke(data.id)
+                                        }
+                                    });
+
+                                    $('.demoTable .layui-btn').on('click', function () {
+                                        var type = $(this).data('type');
+                                        active[type] ? active[type].call(this) : '';
+                                    });
+                                });
+
+                                function xuanke(id) {
+                                    var baseUrl = "http://127.0.0.1:8080";
+                                    $.post(baseUrl + "/student/add_curriculaVariableInfo",
+                                        {
+                                            cId: id
+                                        },
+                                        function (data, status) {
+                                            if (data.code == 200) {
+                                                layer.open({
+                                                    type: 1,
+                                                    id: 'open',
+                                                    offset: '100px',
+                                                    content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                    btn: '确定',
+                                                    btnAlign: 'c',
+                                                    shade: 0,
+                                                    yes: function () {
+                                                        layer.closeAll();
+                                                    }
+                                                });
+                                            } else {
+                                                layer.open({
+                                                    type: 1,
+                                                    id: 'open',
+                                                    offset: '100px',
+                                                    content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                    btn: '确定',
+                                                    btnAlign: 'c',
+                                                    shade: 0,
+                                                    yes: function () {
+                                                        layer.closeAll();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                }
+
+                                function showCourseInfo(id) {
+                                    var baseUrl = "http://127.0.0.1:8080";
+                                    $.post(baseUrl + "/student/query_course",
+                                        {
+                                            id: id
+                                        },
+                                        function (data, status) {
+                                            if (data.code == 200) {
+                                                var course = data.data
+                                                $('#id').val(course.id)
+                                                $('#cNo').val(course.cNo)
+                                                $('#cName').val(course.cName)
+                                                $('#cCredit').val(course.cCredit)
+                                                $("#cPerid").val(course.cPerid)
+                                                $('#tNo').val(course.tNo)
+                                                $("#cGrade").val(course.cGrade)
+                                                $('#cAddress').val(course.cAddress)
+                                                $('#cWeekTime').val(course.cWeekTime)
+                                                $('#cNumber').val(course.cNumber)
+                                                $('#cDesc').val(course.cDesc)
+                                            } else {
+                                                layer.open({
+                                                    type: 1,
+                                                    id: 'open',
+                                                    offset: '100px',
+                                                    content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                    btn: '确定',
+                                                    btnAlign: 'c',
+                                                    shade: 0,
+                                                    yes: function () {
+                                                        layer.closeAll();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                }
+                            </script>
+
+                            <script type="text/html" id="barDemo">
+                                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+                                <a class="layui-btn layui-btn-xs " lay-event="edit">选课</a>
+                            </script>
+
+                            <table id="sources" lay-filter="test"></table>
+                        </div>
+                    </div>
+                    <!--/.col-->
+                </div>
+                <!--/.row-->
+            </div>
+
+
+        </div>
+        <!-- /.conainer-fluid -->
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    © 2017-12-01
+    <span class="float-right">96社团选课系统</span>
+</footer>
+
+<script type="text/javascript">
+    function showCourse(disable,display,url) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-dem', //加上边框
+            area: ['700px', '600px'], //宽高
+            content:'    <div style="width: 100%;height: 30px"></div>\n' +
+            '    <form class="layui-form" action="/admin/add_course">\n' +
+            '\n' +
+            '        <input id="id" name="id" type="text" style="display: none">\n' +
+            '        <div class="layui-form-item">\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">课程号</label>\n' +
+            '                <div class="layui-input-block">\n' +
+            '                    <input id="cNo" name="cNo" lay-verify="num" placeholder="课程号" autocomplete="off"\n' +
+            '                           class="layui-input" type="text">\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">课程名</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <input id="cName" name="cName" lay-verify="required" placeholder="课程名" autocomplete="off"\n' +
+            '                           class="layui-input" type="text">\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-form-item">\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">学分</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <input id="cCredit" name="cCredit" lay-verify="required" placeholder="学分" autocomplete="off"\n' +
+            '                           class="layui-input" type="text">\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">学时</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <input id="cPerid" name="cPerid" lay-verify="required" placeholder="学时" autocomplete="off"\n' +
+            '                           class="layui-input"\n' +
+            '                           type="text">\n' +
+            '                    <div class="layui-form-mid layui-word-aux">　</div>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-form-item">\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">限定人数</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <input id="cNumber" name="cNumber" lay-verify="required" placeholder="限定人数" autocomplete="off"\n' +
+            '                           class="layui-input" type="text">\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">教师工号</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <input id="tNo" name="tNo" lay-verify="required" placeholder="教师工号" autocomplete="off"\n' +
+            '                           class="layui-input"\n' +
+            '                           type="text">\n' +
+            '                    <div class="layui-form-mid layui-word-aux">　</div>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-form-item">\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">上课时间</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <select id="cWeekTime" name="cWeekTime" lay-verify="required" lay-search="">\n' +
+            '                        <option value="">选择</option>\n' +
+            '                        <option value="周一 1-2">周一 1-2</option>\n' +
+            '                        <option value="周一 3-4">周一 3-4</option>\n' +
+            '                        <option value="周一 5-6">周一 5-6</option>\n' +
+            '                        <option value="周一 7-8">周一 7-8</option>\n' +
+            '                        <option value="周二 1-2">周二 1-2</option>\n' +
+            '                        <option value="周二 3-4">周二 3-4</option>\n' +
+            '                        <option value="周二 5-6">周二 5-6</option>\n' +
+            '                        <option value="周二 7-8">周二 7-8</option>\n' +
+            '                        <option value="周三 1-2">周三 1-2</option>\n' +
+            '                        <option value="周三 3-4">周三 3-4</option>\n' +
+            '                        <option value="周三 5-6">周三 5-6</option>\n' +
+            '                        <option value="周三 7-8">周三 7-8</option>\n' +
+            '                        <option value="周四 1-2">周四 1-2</option>\n' +
+            '                        <option value="周四 3-4">周四 3-4</option>\n' +
+            '                        <option value="周四 5-6">周四 5-6</option>\n' +
+            '                        <option value="周四 7-8">周四 7-8</option>\n' +
+            '                        <option value="周五 1-2">周五 1-2</option>\n' +
+            '                        <option value="周五 3-4">周五 3-4</option>\n' +
+            '                        <option value="周五 5-6">周五 5-6</option>\n' +
+            '                        <option value="周五 7-8">周五 7-8</option>\n' +
+            '                    </select>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">上课地点</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <select id="cAddress" name="cAddress" lay-verify="required" lay-search="">\n' +
+            '                        <option value="">选择</option>\n' +
+            '                        <option value="A楼-101">A楼-101</option>\n' +
+            '                        <option value="A楼-102">A楼-102</option>\n' +
+            '                        <option value="A楼-201">A楼-201</option>\n' +
+            '                        <option value="A楼-202">A楼-202</option>\n' +
+            '                        <option value="B楼-101">B楼-101</option>\n' +
+            '                        <option value="B楼-102">B楼-102</option>\n' +
+            '                        <option value="B楼-201">B楼-201</option>\n' +
+            '                        <option value="B楼-202">B楼-202</option>\n' +
+            '                        <option value="C楼-101">C楼-101</option>\n' +
+            '                        <option value="C楼-102">C楼-102</option>\n' +
+            '                        <option value="C楼-201">C楼-201</option>\n' +
+            '                        <option value="C楼-202">C楼-202</option>\n' +
+            '                    </select>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '        \n' +
+            '        <div class="layui-form-item">\n' +
+            '            <div class="layui-inline">\n' +
+            '                <label class="layui-form-label">年级</label>\n' +
+            '                <div class="layui-input-inline">\n' +
+            '                    <select id="cGrade" name="cGrade" lay-verify="required" lay-search="">\n' +
+            '                        <option value="">选择</option>\n' +
+            '                        <option value="大学一年级">大学一年级</option>\n' +
+            '                        <option value="大学二年级">大学二年级</option>\n' +
+            '                        <option value="大学三年级">大学三年级</option>\n' +
+            '                        <option value="大学四年级">大学四年级</option>\n' +
+            '                    </select>\n' +
+            '                    <div class="layui-form-select">\n' +
+            '                    </div>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-form-item layui-form-text">\n' +
+            '            <label class="layui-form-label">课程描述</label>\n' +
+            '            <div class="layui-input-block">\n' +
+            '                <textarea id="cDesc" name="cDesc" placeholder="请输入内容" class="layui-textarea"></textarea>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-form-item" style="display: none">\n' +
+            '            <div class="layui-input-block">\n' +
+            '                <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>\n' +
+            '                <button type="reset" class="layui-btn layui-btn-primary">重置</button>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '    </form>\n' +
+            '    <script>\n' +
+            '        layui.use([\'form\', \'layedit\', \'laydate\'], function () {\n' +
+            '            var form = layui.form\n' +
+            '                , layer = layui.layer\n' +
+            '                , layedit = layui.layedit\n' +
+            '                , laydate = layui.laydate;\n' +
+            '            //自定义验证规则\n' +
+            '            form.verify({\n' +
+            '                num: function (value) {\n' +
+            '                    if (value.length < 10) {\n' +
+            '                        return \'课程号至少是10位有效数字\';\n' +
+            '                    }\n' +
+            '                }\n' +
+            '            });\n' +
+            '            form.render();\n' +
+            '        });\n' +
+            '    </'+'script>'
+
+        });
+    }
+</script>
+
+</body>
+
+</html>

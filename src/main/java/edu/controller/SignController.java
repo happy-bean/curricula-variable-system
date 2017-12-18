@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -62,7 +63,7 @@ public class SignController {
 
         User user = result.getData();
         if (result.getCode() == ResultMess.SUCCESS.getCode()) {
-            request.getSession().setAttribute("userType", user.getuType());
+            request.getSession().setAttribute("userType", user.getuType()+"&"+user.getId());
 
             String indexUrl = "";
 
@@ -96,6 +97,26 @@ public class SignController {
             }
             baseResult.setData(indexUrl);
         }
+        return baseResult;
+    }
+
+    /**
+     * 注销
+     *
+     * @param request
+     * @param response
+     * */
+    @RequestMapping(value = "/signOut", method ={ RequestMethod.POST,RequestMethod.GET})
+    public Result<String> signIn(HttpServletRequest request,HttpServletResponse response) throws IOException {
+
+        Result<String> baseResult = new Result<>();
+
+        HttpSession session = request.getSession();
+
+        session.removeAttribute("userType");
+
+        response.sendRedirect("/login/login.html");
+
         return baseResult;
     }
 }

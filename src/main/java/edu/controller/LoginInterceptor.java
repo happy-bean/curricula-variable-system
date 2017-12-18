@@ -24,13 +24,19 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         String url = httpServletRequest.getRequestURI();
 
-        if (url.indexOf("user") >= 0 || url.indexOf("login") >= 0||url.indexOf("layui")>=0) {
+        if (url.indexOf("user") >= 0 || url.indexOf("login") >= 0 || url.indexOf("layui") >= 0) {
             return true;
         }
 
         HttpSession session = httpServletRequest.getSession();
 
-        Integer userType = (Integer) session.getAttribute("userType");
+        Integer userType = null;
+
+        try {
+            userType = Integer.valueOf(((String) session.getAttribute("userType")).split("&")[0]);
+        } catch (Exception e) {
+
+        }
 
         if (userType != null && userType != 0) {
 
@@ -54,7 +60,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                     }
                     break;
                 default:
-                    httpServletRequest.getRequestDispatcher("/login/login.html").forward(httpServletRequest,httpServletResponse);
+                    httpServletRequest.getRequestDispatcher("/login/login.html").forward(httpServletRequest, httpServletResponse);
                     return false;
 
             }

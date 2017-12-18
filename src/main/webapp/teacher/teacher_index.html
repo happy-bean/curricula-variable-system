@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>96社团选课系统</title>
+    <!-- Icons -->
+    <link href="/teacher/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/teacher/css/simple-line-icons.css" rel="stylesheet">
+    <!-- Main styles for this application -->
+    <link href="/teacher/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../layui-v2.2.3/layui/css/layui.css">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="../layui-v2.2.3/layui/layui.all.js" charset="utf-8"></script>
+    <script src="../layui-v2.2.3/layui/layui.js" charset="utf-8"></script>
+</head>
+
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+<header class="app-header navbar">
+    <ul class="nav navbar-nav hidden-md-down">
+        <li class="nav-item px-1">
+            <a class="nav-link" href="teacher_index.html"><h2>96社团选课系统</h2></a>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav ml-auto">
+
+        <li class="layui-nav-item" lay-unselect="">
+            <a href="/user/signOut"><img src="http://t.cn/RCzsdCq" class="layui-nav-img">退出</a>
+        </li>
+
+        <li class="nav-item hidden-md-down">
+            <a class="nav-link navbar-toggler aside-menu-toggler" href="#"> </a>
+        </li>
+    </ul>
+</header>
+
+<div class="app-body">
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul class="nav">
+
+                <li class="nav-title">
+                    <h4>管理</h4>
+                </li>
+                <li class="nav-item nav-dropdown">
+                    <a class="nav-link nav-dropdown-toggle" href="teacher_index.html"><i class="icon-star"></i>选课信息</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="teacher_course.html"><i class="icon-pie-chart"></i>课程信息</a>
+                </li>
+                <li class="divider"></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <main class="main">
+
+        <!-- Breadcrumb -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">选课信息管理</li>
+            <!-- Breadcrumb Menu-->
+        </ol>
+
+        <div class="container-fluid">
+
+            <div class="animated fadeIn">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <script>
+                                layui.use('table', function () {
+                                    var table = layui.table;
+                                    table.render({ //其它参数在此省略
+                                        elem: '#demo',
+                                        url: '/teacher/query_curriculaVariableInfos',
+                                        page: true,
+                                        limit: 10,
+                                        width: 1040,
+                                        height: 500,
+                                        where: {},//如果无需传递额外参数，可不加该参数
+                                        method: 'post', //如果无需自定义HTTP类型，可不加该参数
+                                        request: {
+                                            pageName: 'pageNo' //页码的参数名称，默认：page
+                                            , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                                        }, //如果无需自定义请求参数，可不加该参数
+                                        response: {
+                                            statusName: 'pageNum' //数据状态的字段名称，默认：code
+                                            , statusCode: 1 //成功的状态码，默认：0
+                                            , msgName: 'mess' //状态信息的字段名称，默认：msg
+                                            , countName: 'size' //数据总数的字段名称，默认：count
+                                            , dataName: 'list' //数据列表的字段名称，默认：data
+                                        } //如果无需自定义数据响应名称，可不加该参数
+                                        ,
+                                        cols: [[ //标题栏
+                                            {field: 'id', width: 100, title: 'ID', sort: true}
+                                            , {field: 'cCNo', width: 150, title: '课程号', sort: true}
+                                            , {field: 'cSNo', width: 110, title: '学号', sort: true}
+                                            , {field: 'cTNo', width: 100, title: '教工号', sort: true}
+                                            , {field: 'cMark', width: 120, title: '成绩', sort: true}
+                                            , {field: 'cStatus', width: 120, title: '审核状态', sort: true}
+                                            , {
+                                                fixed: 'right',
+                                                width: 250,
+                                                title: '操作',
+                                                align: 'center',
+                                                toolbar: '#barDemo'
+                                            }
+                                        ]]
+                                    });
+
+                                    //监听工具条
+                                    table.on('tool(test)', function (obj) {
+                                        var data = obj.data;
+                                        if (obj.event === 'detail') {
+                                            //通过
+                                            upstatus(data.id,'通过')
+                                        } else if (obj.event === 'edit') {
+                                            //不通过
+                                            upstatus(data.id,'不通过')
+                                        }
+                                    });
+
+                                    $('.demoTable .layui-btn').on('click', function () {
+                                        var type = $(this).data('type');
+                                        active[type] ? active[type].call(this) : '';
+                                    });
+                                });
+
+                                function upstatus(id, status) {
+                                    var baseUrl = "http://127.0.0.1:8080";
+                                    $.post(baseUrl + "/teacher/update_curriculaVariableInfo_status",
+                                        {
+                                            id: id,
+                                            status: status
+                                        },
+                                        function (data, status) {
+                                            if (data.code == 200) {
+                                                layer.open({
+                                                    type: 1,
+                                                    id: 'open',
+                                                    offset: '100px',
+                                                    content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                    btn: '确定',
+                                                    btnAlign: 'c',
+                                                    shade: 0,
+                                                    yes: function () {
+                                                        layer.closeAll();
+                                                    }
+                                                });
+                                            } else {
+                                                layer.open({
+                                                    type: 1,
+                                                    id: 'open',
+                                                    offset: '100px',
+                                                    content: '<div style="padding: 20px 100px;">' + data.mess + '</div>',
+                                                    btn: '确定',
+                                                    btnAlign: 'c',
+                                                    shade: 0,
+                                                    yes: function () {
+                                                        layer.closeAll();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                }
+                            </script>
+
+                            <script type="text/html" id="barDemo">
+                                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">通过</a>
+                                <a class="layui-btn layui-btn-xs" lay-event="edit">不通过</a>
+                            </script>
+
+                            <table id="demo" lay-filter="test"></table>
+                        </div>
+                    </div>
+                    <!--/.col-->
+                </div>
+                <!--/.row-->
+            </div>
+
+
+        </div>
+        <!-- /.conainer-fluid -->
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    © 2017-12-01
+    <span class="float-right">96社团选课系统</span>
+</footer>
+
+<script type="text/javascript">
+    var displaytext = 'style="display:none"'
+
+    function showUser(disable, display, url) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-dem', //加上边框
+            area: ['700px', '600px'], //宽高
+            content:
+            '<div style="width: 100%;height: 30px"></div>' +
+            '<form class="layui-form" action="' + url + '">\n' +
+            '\n' +
+            '<input id="id" name="id" type="text" style="display: none">' +
+            '    <div class="layui-form-item">\n' +
+            '        <div class="layui-inline">\n' +
+            '            <label class="layui-form-label">账号</label>\n' +
+            '            <div class="layui-input-block">\n' +
+            '                <input id="uNum" name="uNum" lay-verify="num" placeholder="工号/学号" autocomplete="off"\n' +
+            '                       class="layui-input" type="text" ' + disable + ' >\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '        <div class="layui-inline">\n' +
+            '            <label class="layui-form-label">姓名</label>\n' +
+            '            <div class="layui-input-inline">\n' +
+            '                <input id="uName" name="uName" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input"\n' +
+            '                       type="text" ' + disable + ' >\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '\n' +
+            '    <div class="layui-form-item">\n' +
+            '        <div class="layui-inline">\n' +
+            '            <label class="layui-form-label">密码</label>\n' +
+            '            <div class="layui-input-inline">\n' +
+            '                <input id="uPasswd" name="uPasswd"  lay-verify="pass" placeholder="密码" autocomplete="off" class="layui-input"\n' +
+            '                       type="password">\n' +
+            '                <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-inline">\n' +
+            '            <label class="layui-form-label">确认</label>\n' +
+            '            <div class="layui-input-inline">\n' +
+            '                <input name="re_pass"  lay-verify="re_pass" placeholder="确认密码" autocomplete="off" class="layui-input"\n' +
+            '                       type="password">\n' +
+            '                <div class="layui-form-mid layui-word-aux">　</div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '\n' +
+            '    <div class="layui-form-item">\n' +
+            '        <div class="layui-inline">\n' +
+            '            <label class="layui-form-label">年级</label>\n' +
+            '            <div class="layui-input-inline">\n' +
+            '                <select id="uGrade" name="uGrade" lay-verify="required" lay-search="" ' + disable + '>\n' +
+            '                    <option value="">选择</option>\n' +
+            '                    <option value="大学一年级">大学一年级</option>\n' +
+            '                    <option value="大学二年级">大学二年级</option>\n' +
+            '                    <option value="大学三年级">大学三年级</option>\n' +
+            '                    <option value="大学四年级">大学四年级</option>\n' +
+            '                </select>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '\n' +
+            '        <div class="layui-inline">\n' +
+            '            <label class="layui-form-label">专业</label>\n' +
+            '            <div class="layui-input-inline">\n' +
+            '                <select id="uMajor" name="uMajor" lay-verify="required" lay-search="" ' + disable + '>\n' +
+            '                    <option value="">选择</option>\n' +
+            '                    <option value="计算机教育科学">计算机教育科学</option>\n' +
+            '                    <option value="软件工程">软件工程</option>\n' +
+            '                    <option value="计算机媒体">计算机媒体</option>\n' +
+            '                    <option value="网络工程">网络工程</option>\n' +
+            '                </select>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '\n' +
+            '    <div class="layui-form-item">\n' +
+            '        <label class="layui-form-label">性别</label>\n' +
+            '        <div class="layui-input-block">\n' +
+            '            <input name="uGender" value="男" title="男"  type="radio" ' + disable + ' >\n' +
+            '            <input name="uGender" value="女" title="女" type="radio"  ' + disable + '>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '\n' +
+            '    <div class="layui-form-item">\n' +
+            '        <label class="layui-form-label">身份</label>\n' +
+            '        <div class="layui-input-block">\n' +
+            '            <input name="uType" value="1" title="管理员" type="radio" ' + disable + '>\n' +
+            '            <input name="uType" value="2" title="教师" type="radio" ' + disable + ' >\n' +
+            '            <input name="uType" value="3" title="学生"  type="radio" ' + disable + '>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '\n' +
+            '    <div class="layui-form-item">\n' +
+            '        <div class="layui-input-block">\n' +
+            '            <button class="layui-btn" lay-submit="" lay-filter="demo1" ' + display + '>立即提交</button>\n' +
+            '            <button type="reset" class="layui-btn layui-btn-primary" ' + display + '>重置</button>\n' +
+            '        </div>\n' +
+            '    </div>\n' +
+            '</form>' +
+            '<script>\n' +
+            '    layui.use([\'form\', \'layedit\', \'laydate\'], function () {\n' +
+            '        var form = layui.form\n' +
+            '            , layer = layui.layer\n' +
+            '            , layedit = layui.layedit\n' +
+            '            , laydate = layui.laydate;\n' +
+            '        //自定义验证规则\n' +
+            '        form.verify({\n' +
+            '            num: function (value) {\n' +
+            '                if (value.length < 10) {\n' +
+            '                    return \'学号至少是10位有效数字\';\n' +
+            '                }\n' +
+            '            }\n' +
+            '            , pass: [/(.+){6,12}$/, \'密码必须6到12位\']\n' +
+            '            ,re_pass: function (value) {\n' +
+            '                if(value!=pass.value){\n' +
+            '                    return \'两次密码不同\'\n' +
+            '                }\n' +
+            '            }\n' +
+            '        });\n' +
+            '         form.render();\n' +
+            '    });\n' +
+            '</' + 'script>'
+        });
+    }
+</script>
+
+</body>
+
+</html>

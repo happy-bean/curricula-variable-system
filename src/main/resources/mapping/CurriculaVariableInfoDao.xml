@@ -10,7 +10,7 @@
     <result column="c_c_no" property="cCNo" jdbcType="INTEGER" />
     <result column="c_s_no" property="cSNo" jdbcType="INTEGER" />
     <result column="c_t_no" property="cTNo" jdbcType="INTEGER" />
-    <result column="c_mark" property="cMark" jdbcType="INTEGER" />
+    <result column="c_mark" property="cMark" jdbcType="VARCHAR" />
     <result column="c_status" property="cStatus" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -72,8 +72,7 @@
     select
     <include refid="Base_Column_List" />
     from curricula_variable_info
-    where c_t_no = #{tNo,jdbcType=INTEGER}
-    and c_status <![CDATA[   <>  ]]> 0
+    where c_s_no = #{sNo,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

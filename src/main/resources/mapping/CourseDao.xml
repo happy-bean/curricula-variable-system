@@ -12,7 +12,7 @@
         <result column="c_credit" jdbcType="INTEGER" property="cCredit" />
         <result column="c_perid" jdbcType="INTEGER" property="cPerid" />
         <result column="t_no" jdbcType="INTEGER" property="tNo" />
-        <result column="c_grade" jdbcType="INTEGER" property="cGrade" />
+        <result column="c_grade" jdbcType="VARCHAR" property="cGrade" />
         <result column="c_address" jdbcType="VARCHAR" property="cAddress" />
         <result column="c_week_time" jdbcType="VARCHAR" property="cWeekTime" />
         <result column="c_number" jdbcType="INTEGER" property="cNumber" />
@@ -55,9 +55,9 @@
         select
         <include refid="Base_Column_List" />
         from course
-        where c_grade = #{grade,jdbcType=INTEGER}
+        where c_grade = #{grade,jdbcType=VARCHAR}
     </select>
-    c_no
+
 
     <select id="selectCoursesByCno" resultMap="BaseResultMap">
         <!--
